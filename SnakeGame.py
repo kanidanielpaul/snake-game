@@ -6,6 +6,9 @@ from tkinter import messagebox
 
 
 class Cell:
+    '''
+    represents a single block on screen
+    '''
     GREY = "grey"
     RED = "red"
     WHITE = "white"
@@ -37,6 +40,10 @@ class Cell:
 
 
 class Snake:
+    '''
+    represents a single block of the snakes body
+    each snake block points to the next block on its body
+    '''
     UP = "UP"
     DOWN = "DOWN"
     LEFT = "LEFT"
@@ -59,15 +66,21 @@ class Snake:
         elif self.direction == Snake.DOWN:
             self.cell = current_cell.down
 
+        # delete existing cell/reset color
         current_cell.reset()
+        # draw new snake block/set color
         self.cell.set_fill(Cell.RED)
 
+        # if snake block has another block, recursively call all the above steps on it too until no more blocks
         if self.next is not None:
             self.next.move()
             self.next.direction = self.direction
 
 
     def set_direction(self, direction:str):
+        '''
+        snake cannot go 180 degrees opposite to the direction its currently moving
+        '''
         if self.direction == Snake.RIGHT and direction == Snake.LEFT:
             return
 
@@ -127,7 +140,7 @@ class SnakeGame(tkinter.Tk):
                 row.append(cell)
             self.cells.append(row)
 
-        # set cell neighbours
+        # set cells left, right, top and bottom cells
         for row_index, row in enumerate(self.cells):
             for cell_index, cell in enumerate(row):
                 if cell.x == self.width - 1:
@@ -175,6 +188,9 @@ class SnakeGame(tkinter.Tk):
             self.snake.set_direction(Snake.RIGHT)
 
     def snake_bite_itself(self):
+        '''
+        checks if snake bit itself
+        '''
         next_snake = self.snake.next
 
         while next_snake is not None:
@@ -186,6 +202,9 @@ class SnakeGame(tkinter.Tk):
         return False
 
     def snake_ate_fruit(self):
+        '''
+        checks if the snake ate the fruit
+        '''
         return self.snake.cell.x == self.fruit.cell.x and self.snake.cell.y == self.fruit.cell.y
 
     def randomize_fruit(self):
